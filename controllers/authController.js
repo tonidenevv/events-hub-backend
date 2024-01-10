@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const User = require('../models/User');
+const authMiddleware = require('../middlewares/authMiddleware');
 require('dotenv').config();
 const { Storage } = require('@google-cloud/storage');
 const Multer = require('multer');
@@ -114,6 +115,10 @@ router.post('/login', async (req, res) => {
     } catch (err) {
         console.log(err);
     }
+});
+
+router.get('/logout', authMiddleware, (req, res) => {
+    res.status(200).json('Logged out');
 });
 
 module.exports = router;

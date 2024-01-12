@@ -32,7 +32,7 @@ router.post('/register', multer.single('file'), async (req, res) => {
         const existingEmail = await User.findOne({ email: req.body.email });
         if (existingEmail) return res.status(409).json({ message: 'Email is already taken.' });
 
-        const hashedPassword = await bcrypt.hash(req.body.password, 11);
+        const hashedPassword = await bcrypt.hash(req.body.password, process.env.SALT_ROUNDS);
         const userData = {
             username: req.body.username,
             email: req.body.email,
@@ -99,7 +99,7 @@ router.post('/login', async (req, res) => {
                 avatarUrl: existingUser.avatarUrl,
             }, process.env.JWT_SECRET_KEY);
 
-            res.status(200).json({ token, _id: existingUser._id, username: existingUser.username, avatarUrl: existingUser.avatarUrl, email: existingUser.email });
+            res.status(200).json({ token, _id: existingUser._id, gender: existingUser.gender, username: existingUser.username, avatarUrl: existingUser.avatarUrl, email: existingUser.email });
         } else {
             const token = jwt.sign({
                 username: existingUser.username,
@@ -108,10 +108,8 @@ router.post('/login', async (req, res) => {
                 _id: existingUser._id,
             }, process.env.JWT_SECRET_KEY);
 
-            res.status(200).json({ token, _id: existingUser._id, username: existingUser.username, email: existingUser.email });
+            res.status(200).json({ token, _id: existingUser._id, gender: existingUser.gender, username: existingUser.username, email: existingUser.email });
         }
-
-
     } catch (err) {
         console.log(err);
     }
@@ -119,6 +117,38 @@ router.post('/login', async (req, res) => {
 
 router.get('/logout', authMiddleware, (req, res) => {
     res.status(200).json('Logged out');
+});
+
+router.post('/change-password', authMiddleware, async (req, res) => {
+    try {
+        const { currentPassword, newPassword, confirmNewPassword } = req.body;
+        const checkWrongPasswordLength = (password) => {
+            if (password.length < 5 || password.length > 15) return true;
+
+            return false;
+        }
+
+        if (checkWrongPasswordLength(currentPassword)) return res.status(401).json({ message: 'Wrong password.' });
+
+        if (checkWrongPasswordLength(newPassword)) return res.status(400).json({ message: 'Password should be between 5 and 15 characters' });
+
+        if (newPassword !== confirmNewPassword) return res.status(400).json({ message: 'Passwords don\'t match.' });
+
+        const user = await User.findById(req.user._id);
+
+        const isCorrectPassword = await bcrypt.compare(currentPassword, user.password);
+
+        if (!isCorrectPassword) return res.status(401).json({ message: 'Wrong password.' });
+
+        const newHashedPassword = await bcrypt.hash(newPassword, process.env.SALT_ROUNDS);
+
+        user.password = newHashedPassword;
+
+        await user.save();
+        res.status(200).json('Success');
+    } catch (err) {
+        console.log(err);
+    }
 });
 
 module.exports = router;

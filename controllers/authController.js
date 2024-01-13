@@ -2,30 +2,12 @@ const router = require('express').Router();
 const User = require('../models/User');
 const authMiddleware = require('../middlewares/authMiddleware');
 require('dotenv').config();
-const { Storage } = require('@google-cloud/storage');
-const Multer = require('multer');
 const uniqid = require('uniqid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const upload = require('../config/multer')(process.env.AVATARS_BUCKET_NAME);
 
-const multer = Multer({
-    storage: Multer.memoryStorage(),
-    limits: {
-        fileSize: 1024 * 1024,
-    },
-});
-
-const projectId = process.env.STORAGE_PROJECT_ID;
-const keyFilename = process.env.STORAGE_FILE_NAME;
-
-const storage = new Storage({
-    projectId,
-    keyFilename,
-});
-
-const bucket = storage.bucket(process.env.BUCKET_NAME);
-
-router.post('/register', multer.single('file'), async (req, res) => {
+router.post('/register', upload.multer.single('file'), async (req, res) => {
     try {
         const existingUsername = await User.findOne({ username: req.body.username });
         if (existingUsername) return res.status(409).json({ message: 'Username is already taken.' });
@@ -42,7 +24,7 @@ router.post('/register', multer.single('file'), async (req, res) => {
 
         if (req.file) {
             const fileName = `${uniqid()}_avatar.${req.file.originalname.split('.')[req.file.originalname.split('.').length - 1]}`;
-            const blob = bucket.file(fileName);
+            const blob = upload.bucket.file(fileName);
             const blobStream = blob.createWriteStream();
 
             blobStream.on('finish', () => {

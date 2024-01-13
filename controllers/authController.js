@@ -32,7 +32,7 @@ router.post('/register', multer.single('file'), async (req, res) => {
         const existingEmail = await User.findOne({ email: req.body.email });
         if (existingEmail) return res.status(409).json({ message: 'Email is already taken.' });
 
-        const hashedPassword = await bcrypt.hash(req.body.password, process.env.SALT_ROUNDS);
+        const hashedPassword = await bcrypt.hash(req.body.password, 11);
         const userData = {
             username: req.body.username,
             email: req.body.email,
@@ -128,11 +128,11 @@ router.post('/change-password', authMiddleware, async (req, res) => {
             return false;
         }
 
-        if (checkWrongPasswordLength(currentPassword)) return res.status(401).json({ message: 'Wrong password.' });
-
-        if (checkWrongPasswordLength(newPassword)) return res.status(400).json({ message: 'Password should be between 5 and 15 characters' });
+        if (checkWrongPasswordLength(newPassword)) return res.status(400).json({ message: 'Password should be between 5 and 15 characters.' });
 
         if (newPassword !== confirmNewPassword) return res.status(400).json({ message: 'Passwords don\'t match.' });
+
+        if (checkWrongPasswordLength(currentPassword)) return res.status(401).json({ message: 'Wrong password.' });
 
         const user = await User.findById(req.user._id);
 
@@ -140,7 +140,7 @@ router.post('/change-password', authMiddleware, async (req, res) => {
 
         if (!isCorrectPassword) return res.status(401).json({ message: 'Wrong password.' });
 
-        const newHashedPassword = await bcrypt.hash(newPassword, process.env.SALT_ROUNDS);
+        const newHashedPassword = await bcrypt.hash(newPassword, 11);
 
         user.password = newHashedPassword;
 

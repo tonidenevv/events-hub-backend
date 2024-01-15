@@ -13,13 +13,25 @@ const eventSchema = new mongoose.Schema({
         minlength: 5,
         maxlength: 25,
     },
-    date: {
+    eventDate: {
         type: Date,
         required: true,
     },
     imageUrl: {
         type: String,
         required: true,
+    },
+    eventType: {
+        type: String,
+        required: true,
+        minlength: 3,
+        maxlength: 20,
+    },
+    ticketPrice: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 9999,
     },
     _ownerId: {
         type: mongoose.SchemaTypes.ObjectId,

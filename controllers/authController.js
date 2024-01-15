@@ -28,7 +28,7 @@ router.post('/register', upload.multer.single('file'), async (req, res) => {
             const blobStream = blob.createWriteStream();
 
             blobStream.on('finish', () => {
-                const avatarUrl = process.env.IMAGE_BASE_URL + fileName;
+                const avatarUrl = process.env.AVATAR_BASE_URL + fileName;
                 userData.avatarUrl = avatarUrl;
                 const user = new User(userData);
                 user.save().then(() => {

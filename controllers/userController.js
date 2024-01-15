@@ -59,7 +59,7 @@ router.put('/:userId', authMiddleware, upload.multer.single('file'), async (req,
             const blobStream = blob.createWriteStream();
 
             blobStream.on('finish', () => {
-                const avatarUrl = process.env.IMAGE_BASE_URL + fileName;
+                const avatarUrl = process.env.AVATAR_BASE_URL + fileName;
                 user.avatarUrl = avatarUrl;
                 user.save().then(() => {
                     const token = jwt.sign({

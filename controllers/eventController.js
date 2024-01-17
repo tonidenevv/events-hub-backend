@@ -5,6 +5,16 @@ require('dotenv').config();
 const upload = require('../config/multer')(process.env.EVENT_IMAGES_BUCKET_NAME);
 const uniqid = require('uniqid');
 
+router.get('/', async (req, res) => {
+    try {
+        const events = await Event.find();
+        res.status(200).json(events);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 router.post('/', authMiddleware, upload.multer.single('file'), async (req, res) => {
     try {
         const eventData = {
@@ -22,7 +32,7 @@ router.post('/', authMiddleware, upload.multer.single('file'), async (req, res) 
         blobStream.on('finish', () => {
             const imageUrl = process.env.IMAGE_BASE_URL + fileName;
             eventData.imageUrl = imageUrl;
-            const event = new Event(eventData);
+            const event = new Event({ ...eventData, _ownerId: req.user._id });
             event.save().then(() => {
                 res.status(201).json(event);
             });
@@ -31,5 +41,8 @@ router.post('/', authMiddleware, upload.multer.single('file'), async (req, res) 
         blobStream.end(req.file.buffer);
     } catch (err) {
         console.log(err);
+        res.status(500).json({ error: err.message });
     }
 });
+
+module.exports = router;

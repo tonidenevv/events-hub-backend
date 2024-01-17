@@ -18,6 +18,7 @@ router.get('/:userId', authMiddleware, async (req, res) => {
         res.status(200).json(user);
     } catch (err) {
         console.log(err);
+        res.status(500).json({ error: err.message });
     }
 });
 
@@ -29,6 +30,7 @@ router.delete('/:userId', authMiddleware, async (req, res) => {
         res.status(200).json('Success');
     } catch (err) {
         console.log(err);
+        res.status(500).json({ error: err.message });
     }
 });
 
@@ -99,6 +101,7 @@ router.put('/:userId', authMiddleware, upload.multer.single('file'), async (req,
         }
     } catch (err) {
         console.log(err);
+        res.status(500).json({ error: err.message });
     }
 });
 

@@ -58,6 +58,7 @@ router.post('/register', upload.multer.single('file'), async (req, res) => {
         }
     } catch (err) {
         console.log(err);
+        res.status(500).json({ error: err.message });
     }
 });
 
@@ -94,6 +95,7 @@ router.post('/login', async (req, res) => {
         }
     } catch (err) {
         console.log(err);
+        res.status(500).json({ error: err.message });
     }
 });
 
@@ -130,6 +132,7 @@ router.post('/change-password', authMiddleware, async (req, res) => {
         res.status(200).json('Success');
     } catch (err) {
         console.log(err);
+        res.status(500).json({ error: err.message });
     }
 });
 

@@ -7,7 +7,7 @@ const uniqid = require('uniqid');
 
 router.get('/', async (req, res) => {
     try {
-        const events = await Event.find();
+        const events = await Event.find().sort({ createdAt: -1 });
         res.status(200).json(events);
     } catch (err) {
         console.log(err);

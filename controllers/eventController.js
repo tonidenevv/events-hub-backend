@@ -4,11 +4,30 @@ const authMiddleware = require('../middlewares/authMiddleware');
 require('dotenv').config();
 const upload = require('../config/multer')(process.env.EVENT_IMAGES_BUCKET_NAME);
 const uniqid = require('uniqid');
+const { default: mongoose } = require('mongoose');
 
 router.get('/', async (req, res) => {
     try {
         const events = await Event.find().sort({ createdAt: -1 });
         res.status(200).json(events);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.get('/:eventId', async (req, res) => {
+    try {
+        const { eventId } = req.params;
+
+        if (!mongoose.isValidObjectId(eventId)) return res.status(400).json({ message: 'Invalid ID' });
+
+        const event = await Event.findById(eventId);
+
+        if (!event) return res.status(400).json({ message: 'Wrong ID' });
+
+        return res.status(200).json(event);
+
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: err.message });

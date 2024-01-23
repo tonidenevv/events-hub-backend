@@ -105,4 +105,17 @@ router.put('/:userId', authMiddleware, upload.multer.single('file'), async (req,
     }
 });
 
+router.get('/:userId/basic', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: 'No such user' });
+
+        return res.status(200).json({ avatarUrl: user.avatarUrl, username: user.username });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: err.message });
+    }
+})
+
 module.exports = router;

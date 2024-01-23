@@ -111,7 +111,7 @@ router.get('/:userId/basic', async (req, res) => {
         const user = await User.findById(userId);
         if (!user) return res.status(404).json({ message: 'No such user' });
 
-        return res.status(200).json({ avatarUrl: user.avatarUrl, username: user.username });
+        return res.status(200).json({ avatarUrl: user.avatarUrl, username: user.username, gender: user.gender });
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: err.message });

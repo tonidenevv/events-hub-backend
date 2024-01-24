@@ -22,7 +22,7 @@ router.get('/:eventId', async (req, res) => {
 
         if (!mongoose.isValidObjectId(eventId)) return res.status(400).json({ message: 'Invalid ID' });
 
-        const event = await Event.findById(eventId);
+        const event = await Event.findById(eventId).populate({ path: 'comments', populate: { path: '_ownerId', model: 'User', select: 'avatarUrl username gender' } });
 
         if (!event) return res.status(400).json({ message: 'Wrong ID' });
 

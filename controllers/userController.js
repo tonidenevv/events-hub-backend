@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const User = require('../models/User');
+const Event = require('../models/Event');
 const authMiddleware = require('../middlewares/authMiddleware');
 require('dotenv').config();
 const upload = require('../config/multer')(process.env.AVATARS_BUCKET_NAME);
@@ -111,7 +112,9 @@ router.get('/:userId/basic', async (req, res) => {
         const user = await User.findById(userId);
         if (!user) return res.status(404).json({ message: 'No such user' });
 
-        return res.status(200).json({ avatarUrl: user.avatarUrl, username: user.username, gender: user.gender });
+        const createdEvents = await Event.find({ _ownerId: userId });
+
+        return res.status(200).json({ avatarUrl: user.avatarUrl, username: user.username, gender: user.gender, attending: user.attending, createdEvents });
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: err.message });

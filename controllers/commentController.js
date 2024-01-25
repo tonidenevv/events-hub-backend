@@ -42,8 +42,6 @@ router.post('/:commentId/like', authMiddleware, async (req, res) => {
 
         if (!comment) return res.status(404).json({ message: 'Comment not found.' });
 
-        if (comment._ownerId.valueOf() === req.user._id) return res.status(403).json({ message: 'Forbidden' });
-
         const hasLiked = comment.likes.some(x => x.valueOf() === req.user._id);
 
         if (!hasLiked) {

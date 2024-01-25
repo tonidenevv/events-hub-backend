@@ -14,8 +14,6 @@ router.post('/', authMiddleware, async (req, res) => {
 
         if (!event) return res.status(404).json({ message: 'Event not found' });
 
-        if (event._ownerId.valueOf() === req.user._id) return res.status(403).json({ message: 'Forbidden' });
-
         const comment = new Comment({ commentText, _ownerId: req.user._id, _eventId: eventId });
 
         event.comments.push(comment._id);

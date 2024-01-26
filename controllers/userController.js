@@ -114,7 +114,7 @@ router.get('/:userId/basic', async (req, res) => {
 
         const createdEvents = await Event.find({ _ownerId: userId });
 
-        return res.status(200).json({ avatarUrl: user.avatarUrl, username: user.username, gender: user.gender, attending: user.attending, createdEvents, createdAt: user.createdAt });
+        return res.status(200).json({ avatarUrl: user.avatarUrl, _id: user._id, username: user.username, gender: user.gender, attending: user.attending, createdEvents, createdAt: user.createdAt });
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: err.message });

@@ -6,6 +6,7 @@ require('dotenv').config();
 const upload = require('../config/multer')(process.env.EVENT_IMAGES_BUCKET_NAME);
 const uniqid = require('uniqid');
 const { default: mongoose } = require('mongoose');
+const { differenceInCalendarDays } = require('date-fns');
 
 router.get('/', async (req, res) => {
     try {
@@ -76,6 +77,10 @@ router.post('/:eventId/attend', authMiddleware, async (req, res) => {
         if (!event) return res.status(404).json({ message: 'Event not found' });
 
         if (event._ownerId.valueOf() === req.user._id) return res.status(403).json({ message: 'Forbidden' });
+
+        const hasPassed = differenceInCalendarDays(event.eventDate.toString(), Date.now()) < 0;
+
+        if (hasPassed) return res.status(409).json({ message: 'Event passed' });
 
         const isAttending = event.attending.some(x => x.valueOf() === req.user._id);
 

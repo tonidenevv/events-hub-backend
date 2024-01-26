@@ -109,12 +109,12 @@ router.put('/:userId', authMiddleware, upload.multer.single('file'), async (req,
 router.get('/:userId/basic', async (req, res) => {
     try {
         const { userId } = req.params;
-        const user = await User.findById(userId);
+        const user = await User.findById(userId).populate('attending');
         if (!user) return res.status(404).json({ message: 'No such user' });
 
         const createdEvents = await Event.find({ _ownerId: userId });
 
-        return res.status(200).json({ avatarUrl: user.avatarUrl, username: user.username, gender: user.gender, attending: user.attending, createdEvents });
+        return res.status(200).json({ avatarUrl: user.avatarUrl, username: user.username, gender: user.gender, attending: user.attending, createdEvents, createdAt: user.createdAt });
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: err.message });

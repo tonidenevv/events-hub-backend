@@ -46,6 +46,8 @@ router.post('/', authMiddleware, upload.multer.single('file'), async (req, res) 
             ticketPrice: req.body.ticketPrice,
         };
 
+        if (!req.file) return res.status(400).json({ message: 'Missing fields' });
+
         const fileName = `${uniqid()}_event_image.${req.file.originalname.split('.')[req.file.originalname.split('.').length - 1]}`;
         const blob = upload.bucket.file(fileName);
         const blobStream = blob.createWriteStream();
@@ -65,6 +67,51 @@ router.post('/', authMiddleware, upload.multer.single('file'), async (req, res) 
         res.status(500).json({ error: err.message });
     }
 });
+
+router.put('/:eventId/edit', authMiddleware, upload.multer.single('file'), async (req, res) => {
+    try {
+        const { eventId } = req.params;
+
+        if (!mongoose.isValidObjectId(eventId)) return res.status(404).json({ message: 'Invalid ID' });
+
+        let event = await Event.findById(eventId);
+
+        if (!event) return res.status(404).json({ message: 'Event not found' });
+
+        if (event._ownerId.valueOf() !== req.user._id) return res.status(403).json({ message: 'Forbidden' });
+
+        const eventData = {
+            title: req.body.title,
+            description: req.body.description,
+            eventDate: req.body.eventDate,
+            eventType: req.body.eventType,
+            ticketPrice: req.body.ticketPrice,
+        };
+
+        if (req.file) {
+            const fileName = `${uniqid()}_event_image.${req.file.originalname.split('.')[req.file.originalname.split('.').length - 1]}`;
+            const blob = upload.bucket.file(fileName);
+            const blobStream = blob.createWriteStream();
+
+            blobStream.on('finish', () => {
+                const imageUrl = process.env.IMAGE_BASE_URL + fileName;
+                eventData.imageUrl = imageUrl;
+                Event.findByIdAndUpdate(eventId, { ...eventData, _ownerId: req.user._id, attending: event.attending, createdAt: event.createdAt, comments: event.comments }, { runValidators: true, new: true })
+                    .then(updatedEvent => {
+                        res.status(200).json(updatedEvent);
+                    })
+            });
+
+            blobStream.end(req.file.buffer);
+        } else {
+            const updatedEvent = await Event.findByIdAndUpdate(eventId, { ...eventData, imageUrl: event.imageUrl, _ownerId: req.user._id, attending: event.attending, createdAt: event.createdAt, comments: event.comments }, { runValidators: true, new: true });
+            res.status(200).json(updatedEvent);
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: err.message });
+    }
+})
 
 router.post('/:eventId/attend', authMiddleware, async (req, res) => {
     try {

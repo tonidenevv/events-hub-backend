@@ -15,6 +15,14 @@ const eventSchema = new mongoose.Schema({
     },
     eventDate: {
         type: Date,
+        validate: {
+            validator: function (value) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                return value >= today;
+            },
+            message: 'Event date must be today or later.',
+        },
         required: true,
     },
     imageUrl: {

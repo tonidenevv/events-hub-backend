@@ -111,7 +111,28 @@ router.put('/:eventId/edit', authMiddleware, upload.multer.single('file'), async
         console.log(err);
         res.status(500).json({ error: err.message });
     }
-})
+});
+
+router.delete('/:eventId/delete', authMiddleware, async (req, res) => {
+    try {
+        const { eventId } = req.params;
+
+        if (!mongoose.isValidObjectId(eventId)) return res.status(404).json({ message: 'Invalid ID' });
+
+        const event = await Event.findById(eventId);
+
+        if (!event) return res.status(404).json({ message: 'Invalid ID' });
+
+        if (event._ownerId.valueOf() !== req.user._id) return res.status(403).json({ message: 'Forbidden' });
+
+        const deletedEvent = await Event.findByIdAndDelete(eventId);
+
+        res.status(200).json(deletedEvent);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: err.message });
+    }
+});
 
 router.post('/:eventId/attend', authMiddleware, async (req, res) => {
     try {
@@ -149,6 +170,6 @@ router.post('/:eventId/attend', authMiddleware, async (req, res) => {
         console.log(err);
         res.status(500).json({ error: err.message });
     }
-})
+});
 
 module.exports = router;

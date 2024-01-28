@@ -7,8 +7,19 @@ const upload = require('../config/multer')(process.env.AVATARS_BUCKET_NAME);
 const jwt = require('jsonwebtoken');
 const uniqid = require('uniqid');
 
-router.get('/', (req, res) => {
-    res.send('Users');
+router.get('/', async (req, res) => {
+    try {
+        const searchValue = req.query.username;
+
+        if (!searchValue) return [];
+
+        const users = await User.find({ username: { $regex: new RegExp(searchValue, 'i') } });
+
+        res.status(200).json(users);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 router.get('/:userId', authMiddleware, async (req, res) => {

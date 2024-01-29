@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
 
         if (!searchValue) return [];
 
-        const users = await User.find({ username: { $regex: new RegExp(searchValue, 'i') } });
+        const users = await User.find({ username: { $regex: new RegExp(searchValue, 'i') } }).select('_id username avatarUrl gender');
 
         res.status(200).json(users);
     } catch (err) {

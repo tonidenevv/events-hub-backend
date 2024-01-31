@@ -54,7 +54,7 @@ router.post('/register', upload.multer.single('file'), async (req, res) => {
                 _id: user._id,
             }, process.env.JWT_SECRET_KEY);
 
-            res.status(201).json({ token, _id: user._id, username: user.username, email: user.email });
+            res.status(201).json({ token, _id: user._id, username: user.username, email: user.email, gender: user.gender });
         }
     } catch (err) {
         console.log(err);

@@ -84,7 +84,7 @@ router.put('/:userId', authMiddleware, upload.multer.single('file'), async (req,
                         avatarUrl: user.avatarUrl
                     }, process.env.JWT_SECRET_KEY);
 
-                    res.status(200).json({ token, _id: user._id, username: user.username, email: user.email, avatarUrl: user.avatarUrl });
+                    res.status(200).json({ token, _id: user._id, username: user.username, email: user.email, avatarUrl: user.avatarUrl, gender: user.gender });
                 });
             });
             blobStream.end(req.file.buffer);

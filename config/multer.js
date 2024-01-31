@@ -10,7 +10,7 @@ module.exports = (bucketName) => {
     });
 
     const projectId = process.env.STORAGE_PROJECT_ID;
-    const keyFilename = process.env.STORAGE_FILE_NAME;
+    const keyFilename = JSON.parse(process.env.STORAGE_KEY_FILENAME);
 
     const storage = new Storage({
         projectId,

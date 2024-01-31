@@ -25,8 +25,6 @@ module.exports = (bucketName) => {
     //     universe_domain: process.env.KEY_FILENAME_UNIVERSE_DOMAIN,
     // }
 
-    console.log(credentials);
-
     const storage = new Storage({
         projectId,
         // keyFilename,

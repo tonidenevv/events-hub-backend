@@ -3,7 +3,7 @@ const cors = require('cors');
 const routes = require('../routes');
 
 module.exports = (app) => {
-    app.use(cors());
+    app.use(cors({ origin: 'https://events-hub-frontend.vercel.app/' }));
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json());
     app.use(routes);

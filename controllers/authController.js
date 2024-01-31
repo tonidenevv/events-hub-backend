@@ -40,7 +40,7 @@ router.post('/register', upload.multer.single('file'), async (req, res) => {
                         avatarUrl: user.avatarUrl
                     }, process.env.JWT_SECRET_KEY);
 
-                    res.status(201).json({ token, _id: user._id, username: user.username, email: user.email, avatarUrl: user.avatarUrl });
+                    res.status(201).json({ token, _id: user._id, username: user.username, email: user.email, avatarUrl: user.avatarUrl, gender: user.gender });
                 });
             });
             blobStream.end(req.file.buffer);

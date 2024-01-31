@@ -14,15 +14,15 @@ module.exports = (bucketName) => {
     const keyFilename = {
         type: process.env.KEY_FILENAME_TYPE,
         project_id: process.env.KEY_FILENAME_PROJECTID,
-        private_key_id: KEY_FILENAME_PROJECT_KEY_ID,
-        private_key: KEY_FILENAME_PRIVATE,
-        client_email: KEY_FILENAME_CLIENT_EMAIL,
-        client_id: KEY_FILENAME_CLIENTID,
-        auth_uri: KEY_FILENAME_AUTH_URI,
-        token_uri: KEY_FILENAME_TOKEN_URI,
-        auth_provider_x509_cert_url: KEY_FILENAME_CERT_URL_AUTH,
-        client_x509_cert_url: KEY_FILENAME_CERT_URL_CLIENT,
-        universe_domain: KEY_FILENAME_UNIVERSE_DOMAIN,
+        private_key_id: process.env.KEY_FILENAME_PROJECT_KEY_ID,
+        private_key: process.env.KEY_FILENAME_PRIVATE,
+        client_email: process.env.KEY_FILENAME_CLIENT_EMAIL,
+        client_id: process.env.KEY_FILENAME_CLIENTID,
+        auth_uri: process.env.KEY_FILENAME_AUTH_URI,
+        token_uri: process.env.KEY_FILENAME_TOKEN_URI,
+        auth_provider_x509_cert_url: process.env.KEY_FILENAME_CERT_URL_AUTH,
+        client_x509_cert_url: process.env.KEY_FILENAME_CERT_URL_CLIENT,
+        universe_domain: process.env.KEY_FILENAME_UNIVERSE_DOMAIN,
     }
 
     const storage = new Storage({

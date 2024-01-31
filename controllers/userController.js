@@ -98,7 +98,7 @@ router.put('/:userId', authMiddleware, upload.multer.single('file'), async (req,
                     _id: user._id,
                 }, process.env.JWT_SECRET_KEY);
 
-                res.status(200).json({ token, _id: user._id, username: user.username, email: user.email });
+                res.status(200).json({ token, _id: user._id, username: user.username, gender: user.gender, email: user.email });
             } else {
                 const token = jwt.sign({
                     username: user.username,
@@ -108,7 +108,7 @@ router.put('/:userId', authMiddleware, upload.multer.single('file'), async (req,
                     avatarUrl: user.avatarUrl,
                 }, process.env.JWT_SECRET_KEY);
 
-                res.status(200).json({ token, _id: user._id, username: user.username, email: user.email, avatarUrl: user.avatarUrl });
+                res.status(200).json({ token, _id: user._id, username: user.username, gender: user.gender, email: user.email, avatarUrl: user.avatarUrl });
             }
         }
     } catch (err) {

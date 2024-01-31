@@ -28,7 +28,7 @@ module.exports = (bucketName) => {
     const storage = new Storage({
         projectId,
         // keyFilename,
-        credentials: process.env.STORAGE_KEY_CREDENTIALS
+        credentials: JSON.parse(process.env.STORAGE_KEY_CREDENTIALS),
     });
 
     const bucket = storage.bucket(bucketName);

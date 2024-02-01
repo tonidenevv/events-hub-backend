@@ -4,7 +4,7 @@ Deployed version of the full-stack application: https://events-hub-frontend.verc
 
 # Information
 * Used Node.js, Express and MongoDB as main technologies, JWT and bcrypt for authentication, Multer and @google-cloud/storage for handling image uploads and uniqid to generate unique IDs for the images.
-* Allows the client to make requests for registering an user, logging in, creating, editing and deleting an event, attending an event, commenting, liking comments, changing username, password, email and profile picture as well as deleting an account.
+* Allows the client to make requests for registering an user, logging in, creating, editing and deleting an event, attending an event, retrieving events, commenting, liking comments, changing username, password, email and profile picture as well as deleting an account.
 * Allows the client to also send images as a file, handle them accordingly, store them in a Google Cloud Storage, retrieve the URL of the image and save it in the database.
 * Protected routes giving guests limited functionality, allowing users to view and attend events not owned by them but not being able to edit or delete them and allowing owners to edit and delete them without being able to attend them.
 
